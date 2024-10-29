@@ -1,0 +1,81 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[a4paper, margin = 2 cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{Algorytmy parametryzowane praca domowa 1}
+\author{Dominik Wawszczak}
+\date{2024-10-29}
+
+\begin{document}
+	\setlength{\parindent}{0 cm}
+	
+	Dominik Wawszczak \hfill Algorytmy Parametryzowane
+	
+	numer indeksu: 440014 \hfill praca domowa 1
+	
+	numer grupy: 1
+	
+	\bigskip
+	\hrule
+	\bigskip
+	
+	\textbf{Zadanie 1}
+	
+	\medskip
+	
+	Oznaczmy
+	\[ V(G) \ = \ \{v_{1}, \ldots, v_{n}\} \quad \text{oraz} \quad S_{n} \ = \
+	\left\{ \sigma \ : \ \sigma \in \{1, \ldots, n\}^{\{1, \ldots, n\}} \ \wedge
+	\ \sigma \ \text{jest bijekcją} \right\} \text{.} \]
+	Niech
+	\[ \text{cutwidth}_{\sigma}(i) \ = \ |\{(u, v) \ : \ u \in \{v_{\sigma_{1}}
+	\ldots v_{\sigma_{i}}\} \ \wedge \ v \in \{v_{\sigma_{i + 1}}, \ldots,
+	v_{\sigma_{n}}\} \ \wedge \ (u, v) \in E(G)\}| \text{,} \]
+	gdzie \(\sigma \in S_{n}\) jest dowolną permutacją. Celem jest znalezienie
+	permutacji \(\sigma \in S_{n}\), dla której wartość
+	\[ \underset{i \in \{1, \ldots, n - 1\}}{\max} \
+	\text{cutwidth}_{\sigma}(i) \]
+	jest najmniejsza możliwa. Konkretnie, chcemy obliczyć tę wartość.
+	
+	\medskip
+	
+	Zdefiniujmy funkcję
+	\[ \text{out}(X) \ = \ |\{(u, v) \ : \ u \in X \ \wedge \ v \in V(G)
+	\setminus X \ \wedge \ (u, v) \in E(G)\}| \text{,} \]
+	gdzie \(X\) jest dowolnym podzbiorem \(V(G)\). Wówczas
+	\[ \text{cutwidth}_{\sigma}(i) \ = \ \text{out}(\{v_{\sigma_{1}}, \ldots,
+	v_{\sigma_{i}}\}) \text{.} \]
+	Oczywiście, dla konkretnego \(X\), wartość \(\text{out}(X)\) można łatwo
+	obliczyć w czasie \(n^{\mathcal{O}(1)}\).
+	
+	\medskip
+	
+	Pozwala nam to skorzystać z programowania dynamicznego po podzbiorach. Niech
+	\[ \text{dp}(X) \ = \ \min \left\{ \underset{i \in
+	\{1, \ldots, |X| - 1\}}{\max} \ \text{cutwidth}_{\sigma}(i) \ : \ \sigma \in
+	S_{n} \ \wedge \ \{v_{\sigma_{1}}, \ldots, v_{\sigma_{|X|}}\} = X \right\}
+	\text{,} \]
+	gdzie \(X\) jest dowolnym podzbiorem \(V(G)\). Wtedy
+	\begin{align*}
+		\text{dp}(\emptyset) \ &= \ 0 \text{,} \\
+		\text{dp}(X) \ &= \ \min \{\max(\text{dp}(X \setminus \{x\}),
+		\text{out}(X \setminus \{x\}) \ : \ x \in X\} \text{.}
+	\end{align*}
+	Naturalnie, wynikiem jest \(\text{dp}(\{1, \ldots, n\})\). Żeby obliczyć
+	wartości \(\text{dp}\) dla wszystkich podzbiorów \(V(G)\), można na przykład
+	przeglądać je w kolejności niemalejących rozmiarów. Całkowita złożoność
+	naszego algorytmu wynosi \(2^{n} \cdot n^{\mathcal{O}(1)}\).
+\end{document}
