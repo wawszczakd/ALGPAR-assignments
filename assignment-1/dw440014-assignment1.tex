@@ -78,4 +78,77 @@
 	wartości \(\text{dp}\) dla wszystkich podzbiorów \(V(G)\), można na przykład
 	przeglądać je w kolejności niemalejących rozmiarów. Całkowita złożoność
 	naszego algorytmu wynosi \(2^{n} \cdot n^{\mathcal{O}(1)}\).
+	
+	\newpage
+	
+	\textbf{Zadanie 2}
+	
+	\medskip
+	
+	\underline{Lemat 1} Zbiór punktów \(S\), w którym żadne trzy nie są
+	współliniowe, nie tworzy wierzchołków wielokąta wypukłego wtedy i tylko
+	wtedy, gdy istnieją punkty \(A, B, C, D \in S\) takie, że punkt \(D\) leży
+	wewnątrz \(\triangle ABC\).
+	
+	\medskip
+	
+	\underline{Dowód lematu 1} Implikacja ,,w lewo'' jest oczywista, skupmy się
+	więc na implikacji ,,w prawo''. Niech \(\{H_{1}, \ldots, H_{h}\}\) będzie
+	otoczką wypukłą zbioru \(S\), przy czym zakładamy, że punkty te leżą na
+	otoczce w tej kolejności zgodnie z kierunkiem przeciwnym do ruchu wskazówek
+	zegara. Niech \(D\) będzie dowolnym punktem z \(S\) nieleżącym na otoczce
+	oraz niech \(A = H_{1}\). Istnieje wówczas dokładnie jedno \(i \in \{2,
+	\ldots, h - 1\}\) takie, że punkty \(H_{2}, \ldots, H_{i}\) leżą po jednej
+	stronie prostej \(AD\), a punkty \(H_{i + 1}, \ldots, H_{h}\) po drugiej.
+	Biorąc \(B = H_{i}\) oraz \(C = H_{i + 1}\) otrzymamy szukane punkty.
+	
+	\medskip
+	
+	Z udowodnionego lematu wynika, że jeśli istnieją punkty \(A, B, C, D \in S\)
+	takie, że punkt \(D\) leży wewnątrz \(\triangle ABC\), to co najmniej jeden
+	z nich musi zostać usunięty z \(S\). Obserwacja ta prowadzi do następującego
+	algorytmu:
+	
+	\begin{algorithm}
+		\caption{ConvexDeletion}
+		\begin{algorithmic}[1]
+			\Procedure{ConvexDeletion}{$S, k$}
+			    \If{no four points $A, B, C, D \in S$ satisfy that $D$ lies
+			        inside $\triangle ABC$}
+			        \State \Return true
+			    \EndIf
+			    \If{$k \leqslant 0$}
+			        \State \Return false
+			    \EndIf
+			    \State Choose points $(A, B, C, D) \in S$ such that $D$ lies
+			           inside $\triangle ABC$
+			    \State \Return \Call{ConvexDeletion}{$S \setminus \{A\}, k - 1$}
+			           \textbf{or}
+			           \Call{ConvexDeletion}{$S \setminus \{B\}, k - 1$}
+			           \textbf{or}
+			    \Statex \hspace{4.685em}
+			           \Call{ConvexDeletion}{$S \setminus \{C\}, k - 1$}
+			           \textbf{or}
+			           \Call{ConvexDeletion}{$S \setminus \{D\}, k - 1$}
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	
+	Szukanie takich czwórek punktów \(A, B, C, D\) można łatwo zrealizować w
+	czasie \(\mathcal{O} \big( n^{4} \big)\), przeglądając wszystkie czwórki
+	punktów, dla każdej licząc odpowiednie iloczyny wektorowe i porównując ich
+	znaki. Można to również zrobić w czasie \(\mathcal{O} (n \log n)\),
+	obliczając otoczkę wypukłą przy pomocy algorytmu Grahama i korzystając z
+	konstrukcyjnego dowodu lematu 1.
+	
+	\medskip
+	
+	Głębokość drzewa rekurencji naszego algorytmu wynosi co najwyżej \(k\),
+	ponieważ przy wywołaniu rekurencyjnym parametr \(k\) zmniejsza się o \(1\).
+	Każdy wierzchołek tego drzewa ma co najwyżej czterech synów, skąd dostajemy
+	górne oszacowanie na liczbę wierzchołków drzewa:
+	\[ \sum\limits_{i = 0}^{k} 4^{i} \ = \ \frac{4^{k + 1} - 1}{3} \ = \
+	\mathcal{O} \big( 4^{k} \big) \text{.} \]
+	Łączna złożoność naszego algorytmu wynosi zatem
+	\(\mathcal{O} \big( 4^{k} \big) \cdot n^{\mathcal{O}(1)}\).
 \end{document}
