@@ -15,102 +15,101 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
-\title{Algorytmy parametryzowane praca domowa 1}
+\title{Parameterized Algorithms assignment 1}
 \author{Dominik Wawszczak}
 \date{2024-10-29}
 
 \begin{document}
 	\setlength{\parindent}{0 cm}
 	
-	Dominik Wawszczak \hfill Algorytmy Parametryzowane
+	Dominik Wawszczak \hfill Parameterized Algorithms
 	
-	numer indeksu: 440014 \hfill praca domowa 1
+	student id number: 440014 \hfill assignment 1
 	
-	numer grupy: 1
+	group number: 1
 	
 	\bigskip
 	\hrule
 	\bigskip
 	
-	\textbf{Zadanie 1}
+	\textbf{Task 1}
 	
 	\medskip
 	
-	Oznaczmy
-	\[ V(G) \ = \ \{v_{1}, \ldots, v_{n}\} \quad \text{oraz} \quad S_{n} \ = \
+	Let
+	\[ V(G) \ = \ \{v_{1}, \ldots, v_{n}\} \quad \text{and} \quad S_{n} \ = \
 	\left\{ \sigma \ : \ \sigma \in \{1, \ldots, n\}^{\{1, \ldots, n\}} \ \wedge
-	\ \sigma \ \text{jest bijekcją} \right\} \text{.} \]
-	Niech
+	\ \sigma \ \text{is a bijection} \right\} \text{.} \]
+	Define
 	\[ \text{cutwidth}_{\sigma}(i) \ = \ |\{(u, v) \ : \ u \in \{v_{\sigma_{1}}
 	\ldots v_{\sigma_{i}}\} \ \wedge \ v \in \{v_{\sigma_{i + 1}}, \ldots,
 	v_{\sigma_{n}}\} \ \wedge \ (u, v) \in E(G)\}| \text{,} \]
-	gdzie \(\sigma \in S_{n}\) jest dowolną permutacją. Celem jest znalezienie
-	permutacji \(\sigma \in S_{n}\), dla której wartość
+	where \(\sigma \in S_{n}\) is any permutation. The objective is to find a
+	permutation \(\sigma \in S_{n}\) that minimizes the value
 	\[ \underset{i \in \{1, \ldots, n - 1\}}{\max} \
 	\text{cutwidth}_{\sigma}(i) \]
-	jest najmniejsza możliwa. Konkretnie, chcemy obliczyć tę wartość.
+	and to calculate this minimum.
 	
 	\medskip
 	
-	Zdefiniujmy funkcję
+	Define the function
 	\[ \text{out}(X) \ = \ |\{(u, v) \ : \ u \in X \ \wedge \ v \in V(G)
 	\setminus X \ \wedge \ (u, v) \in E(G)\}| \text{,} \]
-	gdzie \(X\) jest dowolnym podzbiorem \(V(G)\). Wówczas
+	where \(X\) is any subset of \(V(G)\). Then
 	\[ \text{cutwidth}_{\sigma}(i) \ = \ \text{out}(\{v_{\sigma_{1}}, \ldots,
 	v_{\sigma_{i}}\}) \text{.} \]
-	Oczywiście, dla konkretnego \(X\), wartość \(\text{out}(X)\) można łatwo
-	obliczyć w czasie \(n^{\mathcal{O}(1)}\).
+	For any given \(X\), \(\text{out}(X)\) can be calculated in time
+	\(n^{\mathcal{O}(1)}\).
 	
 	\medskip
 	
-	Pozwala nam to skorzystać z programowania dynamicznego po podzbiorach. Niech
+	We will use dynamic programming over subsets. Define
 	\[ \text{dp}(X) \ = \ \min \left\{ \underset{i \in
 	\{1, \ldots, |X| - 1\}}{\max} \ \text{cutwidth}_{\sigma}(i) \ : \ \sigma \in
 	S_{n} \ \wedge \ \{v_{\sigma_{1}}, \ldots, v_{\sigma_{|X|}}\} = X \right\}
 	\text{,} \]
-	gdzie \(X\) jest dowolnym podzbiorem \(V(G)\). Wtedy
+	where \(X\) is any subset of \(V(G)\). Then
 	\begin{align*}
 		\text{dp}(\emptyset) \ &= \ 0 \text{,} \\
 		\text{dp}(X) \ &= \ \min \{\max(\text{dp}(X \setminus \{x\}),
-		\text{out}(X \setminus \{x\}) \ : \ x \in X\} \text{.}
+		\text{out}(X \setminus \{x\})) \ : \ x \in X\} \text{.}
 	\end{align*}
-	Naturalnie, wynikiem jest \(\text{dp}(\{1, \ldots, n\})\). Żeby obliczyć
-	wartości \(\text{dp}\) dla wszystkich podzbiorów \(V(G)\), można na przykład
-	przeglądać je w kolejności niemalejących rozmiarów. Całkowita złożoność
-	naszego algorytmu wynosi \(2^{n} \cdot n^{\mathcal{O}(1)}\).
+	The answer to the problem is \(\text{dp}(\{1, \ldots, n\})\). To compute
+	\(\text{dp}\) for all subsets of \(V(G)\), we iterate over subsets in
+	non-decreasing order of size. The time complexity of this algorithm is
+	\(2^{n} \cdot n^{\mathcal{O}(1)}\).
 	
 	\newpage
 	
-	\textbf{Zadanie 2}
+	\textbf{Task 2}
 	
 	\medskip
 	
-	\underline{Lemat 1} Zbiór punktów \(S\), w którym żadne trzy nie są
-	współliniowe, nie tworzy wierzchołków wielokąta wypukłego wtedy i tylko
-	wtedy, gdy istnieją punkty \(A, B, C, D \in S\) takie, że punkt \(D\) leży
-	wewnątrz \(\triangle ABC\).
+	\underline{Lemma 1} A set of points \(S\), in which no three points are
+	collinear, does not form the vertices of a convex polygon if and only if
+	there exist points \(A, B, C, D \in S\) such that \(D\) lies inside
+	\(\triangle ABC\).
 	
 	\medskip
 	
-	\underline{Dowód lematu 1} Implikacja ,,w lewo'' jest oczywista, skupmy się
-	więc na implikacji ,,w prawo''. Niech \(\{H_{1}, \ldots, H_{h}\}\) będzie
-	otoczką wypukłą zbioru \(S\), przy czym zakładamy, że punkty te leżą na
-	otoczce w tej kolejności zgodnie z kierunkiem przeciwnym do ruchu wskazówek
-	zegara. Niech \(D\) będzie dowolnym punktem z \(S\) nieleżącym na otoczce
-	oraz niech \(A = H_{1}\). Istnieje wówczas dokładnie jedno \(i \in \{2,
-	\ldots, h - 1\}\) takie, że punkty \(H_{2}, \ldots, H_{i}\) leżą po jednej
-	stronie prostej \(AD\), a punkty \(H_{i + 1}, \ldots, H_{h}\) po drugiej.
-	Biorąc \(B = H_{i}\) oraz \(C = H_{i + 1}\) otrzymamy szukane punkty.
+	\underline{Proof of lemma 1} The implication ,,to the left'' is obvious,
+	so we only need to prove the implication ,,to the right''. Let \(\{H_{1},
+	\ldots, H_{h}\}\) be the convex hull of the set \(S\), with the assumption
+	that these points are ordered counterclockwise along the hull. Let \(D\) be
+	any point in \(S\) that does not belong to the hull, and let \(A = H_{1}\).
+	There exists exactly one \(i \in \{2, \ldots, h - 1\}\) such that points
+	\(H_{2}, \ldots, H_{i}\) lie on one side of the line \(AD\), while points
+	\(H_{i + 1}, \ldots, H_{h}\) lie on the other side. Taking \(B = H_{i}\) and
+	\(C = H_{i + 1}\), we will obtain the desired points.
 	
 	\medskip
 	
-	Z udowodnionego lematu wynika, że jeśli istnieją punkty \(A, B, C, D \in S\)
-	takie, że punkt \(D\) leży wewnątrz \(\triangle ABC\), to co najmniej jeden
-	z nich musi zostać usunięty z \(S\). Obserwacja ta prowadzi do następującego
-	algorytmu:
+	According to lemma 1, if there exist points \(A, B, C, D \in S\) such that
+	\(D\) lies inside \(\triangle ABC\), then at least of these points must be
+	removed from \(S\). This observation leads to the following algorithm:
 	
 	\begin{algorithm}
-		\caption{ConvexDeletion}
+		\caption{ConvexDeletion} \label{alg:alg1}
 		\begin{algorithmic}[1]
 			\Procedure{ConvexDeletion}{$S, k$}
 			    \If{no four points $A, B, C, D \in S$ satisfy that $D$ lies
@@ -134,21 +133,21 @@
 		\end{algorithmic}
 	\end{algorithm}
 	
-	Szukanie takich czwórek punktów \(A, B, C, D\) można łatwo zrealizować w
-	czasie \(\mathcal{O} \big( n^{4} \big)\), przeglądając wszystkie czwórki
-	punktów, dla każdej licząc odpowiednie iloczyny wektorowe i porównując ich
-	znaki. Można to również zrobić w czasie \(\mathcal{O} (n \log n)\),
-	obliczając otoczkę wypukłą przy pomocy algorytmu Grahama i korzystając z
-	konstrukcyjnego dowodu lematu 1.
+	Finding such quadruples of points \(A, B, C, D\) can easily be done in
+	\(\mathcal{O} \big( n^{4} \big)\) time by examining all quadruples of
+	points, calculating the relevant cross products for each, and comparing
+	their signs. This can also be done in \(\mathcal{O} (n \log n)\) time by
+	computing the convex hull using Graham's algorithm and applying the
+	constructive proof of lemma 1.
 	
 	\medskip
 	
-	Głębokość drzewa rekurencji naszego algorytmu wynosi co najwyżej \(k\),
-	ponieważ przy wywołaniu rekurencyjnym parametr \(k\) zmniejsza się o \(1\).
-	Każdy wierzchołek tego drzewa ma co najwyżej czterech synów, skąd dostajemy
-	górne oszacowanie na liczbę wierzchołków drzewa:
+	The depth of the recursion tree fro of the algorithm \ref{alg:alg1} is at
+	most \(k\), since with each recursive call, the parameter \(k\) decreases
+	by \(1\). Each node of this tree has at most four children, which gives us
+	an upper bound on the number of nodes in the tree:
 	\[ \sum\limits_{i = 0}^{k} 4^{i} \ = \ \frac{4^{k + 1} - 1}{3} \ = \
 	\mathcal{O} \big( 4^{k} \big) \text{.} \]
-	Łączna złożoność naszego algorytmu wynosi zatem
+	Therefore, the overall complexity of the algorithm \ref{alg:alg1} is
 	\(\mathcal{O} \big( 4^{k} \big) \cdot n^{\mathcal{O}(1)}\).
 \end{document}
