@@ -32,7 +32,7 @@
 	\hrule
 	\bigskip
 	
-	\textbf{Task 1}
+	\textbf{Problem 1}
 	
 	\medskip
 	
@@ -79,9 +79,9 @@
 	non-decreasing order of size. The time complexity of this algorithm is
 	\(2^{n} \cdot n^{\mathcal{O}(1)}\).
 	
-	\newpage
+	\bigskip
 	
-	\textbf{Task 2}
+	\textbf{Problem 2}
 	
 	\medskip
 	
@@ -102,7 +102,7 @@
 	\(H_{i + 1}, \ldots, H_{h}\) lie on the other side. Taking \(B = H_{i}\) and
 	\(C = H_{i + 1}\), we will obtain the desired points.
 	
-	\medskip
+	\newpage
 	
 	According to lemma 1, if there exist points \(A, B, C, D \in S\) such that
 	\(D\) lies inside \(\triangle ABC\), then at least of these points must be
@@ -150,4 +150,122 @@
 	\mathcal{O} \big( 4^{k} \big) \text{.} \]
 	Therefore, the overall complexity of the algorithm \ref{alg:alg1} is
 	\(\mathcal{O} \big( 4^{k} \big) \cdot n^{\mathcal{O}(1)}\).
+	
+	\bigskip
+	
+	\textbf{Problem 3}
+	
+	\medskip
+	
+	Let \(d = 10\). We will begin by reducing the size of \(\mathcal{F}\) to a
+	polynomial in \(k\).
+	
+	\medskip
+	
+	If \(|\mathcal{F}| \leqslant k^{d + 1}\), no reduction is necessary.
+	Otherwise, there exists an element \(a_{1} \in \bigcup \mathcal{F}\) such
+	that the subset \(\mathcal{A}_{1} = \{A \in \mathcal{F} \ : \ a_{1} \in
+	A\}\) has size at least \(k^{d} + 1\). If this were not the case, a hitting
+	set of size \(k\) would cover at most \(k^{d + 1}\) sets. We either include
+	\(a_{1}\) in the hitting set or exclude it. If we exclude it, then there
+	exists an element \(a_{2} \in \bigcup \mathcal{F} \setminus \{a_{1}\}\) such
+	that \(\mathcal{A}_{2} = \{A \in \mathcal{A}_{1} \ : \ a_{2} \in A\}\) has
+	size at least \(k^{d - 1} + 1\), and so on.
+	
+	\medskip
+	
+	By repeating this process until it is possible, we obtain a set of \(l\)
+	distinct elements \(\{a_{1}, a_{2}, \ldots, a_{l}\}\) and a corresponding
+	set of families \(\{\mathcal{A}_{1}, \mathcal{A}_{2}, \ldots,
+	\mathcal{A}_{l}\}\) such that for each \(i \in \{1, 2, \ldots, l\}\),
+	\(\mathcal{A}_{i - 1} \supseteq \mathcal{A}_{i}\) (with \(\mathcal{A}_{0} =
+	\mathcal{F})\), \(|\mathcal{A}_{i}| \geqslant k^{d + 1 - i} + 1\), and
+	\[ \underset{j \in \{i, i + 1, \ldots, l\}}{\forall} \
+	\underset{A \in \mathcal{A}_{j}}{\forall} \ a_{i} \in A \text{.} \]
+	
+	Suppose, for the sake of contradiction, that \(l > d\). Then
+	\(|\mathcal{A}_{d + 1}| \geqslant 2\), and all sets in
+	\(\mathcal{A}_{d + 1}\) would contain \(\{a_{1}, a_{2}, \ldots,
+	a_{d + 1}\}\), which contradicts the assumption that for any two distinct
+	sets \(A, B \in \mathcal{F}\), \(|A \cap B| \leqslant d\).
+	
+	\medskip
+	
+	At least one element from \(\{a_{1}, a_{2}, \ldots, a_{l}\}\) must be
+	included in the hitting set. This can be verified, as otherwise, to cover
+	the entire family \(\mathcal{A}_{l}\) (which has size at least
+	\(k^{d + 1 - l} + 1\)), there would need to be an element \(a_{l + 1}\)
+	contained in at least \(k^{d - l} + 1\) sets from \(\mathcal{A}_{l}\). This
+	would contradict the fact that the process was repeated until it was
+	possible.
+	
+	\medskip
+	
+	If we include any \(a \in \{a_{1}, a_{2}, \ldots, a_{l}\}\) in the hitting
+	set, every set \(A \in \mathcal{A}_{1}\) will be covered. Therefore, we can
+	apply the following reduction, until it is possible:
+	\begin{itemize}
+		\item[R1:] If \(|\mathcal{F}| > k^{d + 1}\), find \(\{a_{1}, a_{2},
+		           \ldots, a_{l}\}\) and \(\{\mathcal{A}_{1}, \mathcal{A}_{2},
+		           \ldots, \mathcal{A}_{l}\}\), then replace \(\mathcal{F}\)
+		           with \((\mathcal{F} \setminus \mathcal{A}_{1}) \cup
+		           \{\{a_{1}, a_{2}, \ldots, a_{l}\}\}\).
+	\end{itemize}
+	Note that after applying R1, the condition that for any two distinct sets
+	\(A, B \in \mathcal{F}\), \(|A \cap B| \leqslant d\) still holds, as the
+	newly added set is a subset of one or more sets that were originally in
+	\(\mathcal{F}\).
+	
+	\medskip
+	
+	The sets \(\{a_{1}, a_{2}, \ldots, a_{l}\}\) and \(\{\mathcal{A}_{1},
+	\mathcal{A}_{2}, \ldots, \mathcal{A}_{l}\}\) can be found in polynomial time
+	with respect to the input size. To identify \(a_{i}\), we iterate through
+	each \(a \in \bigcup \mathcal{A}_{i - 1}\), checking which sets in
+	\(\mathcal{A}_{i - 1}\) contain it.
+	
+	\medskip
+	
+	Applying R1 will require polynomial time overall, as each application of R1
+	decreases the size of \(\mathcal{F}\) by at least \(k^{d} + 1 - 1 = k^{d} >
+	0\), so R1 will be applied at most \(|\mathcal{F}|\) times.
+	
+	\medskip
+	
+	Once the size of \(|\mathcal{F}|\) has been reduced to
+	\(\mathcal{O}\big(k^{d + 1}\big)\), we still need to reduce the size of
+	\(\bigcup \mathcal{F}\). We apply the following reduction as long as it is
+	possible:
+	\begin{itemize}
+		\item[R2:] If there exists a set \(A \in \mathcal{F}\) such that for
+		           every \(B \in \mathcal{F} \setminus \{A\}\), \(A \cap B =
+		           \emptyset\), we replace \(\mathcal{F}\) with \(\mathcal{F}
+		           \setminus \{A\}\), \(k\) with \(k - 1\), and add any \(a \in
+		           A\) to the hitting set, unless \(A\) is empty, in which case
+		           we reject.
+	\end{itemize}
+	Now we assume that for any two distinct sets \(A, B \in \mathcal{F}\), \(A
+	\cap B \neq \emptyset\), which enables us to apply the next reduction until
+	it is no longer possible:
+	\begin{itemize}
+		\item[R3:] If there exists an element \(a \in \bigcup \mathcal{F}\) that
+		           is contained in only one set in \(\mathcal{F}\), replace
+		           \(\mathcal{F}\) with \(\{A \setminus \{a\} \ : \ A \in
+		           \mathcal{F}\}\).
+	\end{itemize}
+	This reduction is valid, as if \(a\) were required in the hitting set, it
+	could be replaced with any other element from the set in \(\mathcal{F}\)
+	that contains it, particularly an element included in at least two sets in
+	\(\mathcal{F}\).
+	
+	\medskip
+	
+	After applying R2 and R3, every element in \(\bigcup \mathcal{F}\) is
+	contained in at least two sets in \(\mathcal{F}\). Therefore, the size of
+	\(\bigcup \mathcal{F}\) is bounded by:
+	\[ \left| \bigcup \mathcal{F} \right| \ \leqslant \ \frac{1}{2} \cdot
+	\sum\limits_{A, B \in \mathcal{F} \ \wedge \ A \neq B} |A \cap B| \
+	\leqslant \ \frac{k^{d + 1} \big(k^{d + 1} - 1\big)d}{2} \ = \
+	k^{\mathcal{O}(1)} \text{,} \]
+	which completes the proof.
 \end{document}
