@@ -175,41 +175,40 @@
 	\medskip
 	
 	By repeating this process until it is possible, we obtain a set of \(l\)
-	distinct elements \(\{a_{1}, a_{2}, \ldots, a_{l}\}\) and a corresponding
-	set of families \(\{\mathcal{A}_{1}, \mathcal{A}_{2}, \ldots,
-	\mathcal{A}_{l}\}\) such that for each \(i \in \{1, 2, \ldots, l\}\),
-	\(\mathcal{A}_{i - 1} \supseteq \mathcal{A}_{i}\) (with \(\mathcal{A}_{0} =
-	\mathcal{F})\), \(|\mathcal{A}_{i}| \geqslant k^{d + 1 - i} + 1\), and
+	distinct elements \(\{a_{1}, \ldots, a_{l}\}\) and a corresponding set of
+	families \(\{\mathcal{A}_{1}, \ldots, \mathcal{A}_{l}\}\) such that for each
+	\(i \in \{1, \ldots, l\}\), \(\mathcal{A}_{i - 1} \supseteq
+	\mathcal{A}_{i}\) (with \(\mathcal{A}_{0} = \mathcal{F})\),
+	\(|\mathcal{A}_{i}| \geqslant k^{d + 1 - i} + 1\), and
 	\[ \underset{j \in \{i, i + 1, \ldots, l\}}{\forall} \
 	\underset{A \in \mathcal{A}_{j}}{\forall} \ a_{i} \in A \text{.} \]
 	
 	Suppose, for the sake of contradiction, that \(l > d\). Then
 	\(|\mathcal{A}_{d + 1}| \geqslant 2\), and all sets in
-	\(\mathcal{A}_{d + 1}\) would contain \(\{a_{1}, a_{2}, \ldots,
-	a_{d + 1}\}\), which contradicts the assumption that for any two distinct
-	sets \(A, B \in \mathcal{F}\), \(|A \cap B| \leqslant d\).
+	\(\mathcal{A}_{d + 1}\) would contain \(\{a_{1}, \ldots, a_{d + 1}\}\),
+	which contradicts the assumption that for any two distinct sets \(A, B \in
+	\mathcal{F}\), \(|A \cap B| \leqslant d\).
 	
 	\medskip
 	
-	At least one element from \(\{a_{1}, a_{2}, \ldots, a_{l}\}\) must be
-	included in the hitting set. This can be verified, as otherwise, to cover
-	the entire family \(\mathcal{A}_{l}\) (which has size at least
-	\(k^{d + 1 - l} + 1\)), there would need to be an element \(a_{l + 1}\)
-	contained in at least \(k^{d - l} + 1\) sets from \(\mathcal{A}_{l}\). This
-	would contradict the fact that the process was repeated until it was
-	possible.
+	At least one element from \(\{a_{1}, \ldots, a_{l}\}\) must be included in
+	the hitting set. This can be verified, as otherwise, to cover the entire
+	family \(\mathcal{A}_{l}\) (which has size at least \(k^{d + 1 - l} + 1\)),
+	there would need to be an element \(a_{l + 1}\) contained in at least
+	\(k^{d - l} + 1\) sets from \(\mathcal{A}_{l}\). This would contradict the
+	fact that the process was repeated until it was possible.
 	
 	\medskip
 	
-	If we include any \(a \in \{a_{1}, a_{2}, \ldots, a_{l}\}\) in the hitting
-	set, every set \(A \in \mathcal{A}_{1}\) will be covered. Therefore, we can
-	apply the following reduction, until it is possible:
+	If we include any \(a \in \{a_{1}, \ldots, a_{l}\}\) in the hitting set,
+	every set \(A \in \mathcal{A}_{1}\) will be covered. Therefore, we can apply
+	the following reduction, until it is possible:
 	\begin{itemize}
-		\item[R1:] If \(|\mathcal{F}| > k^{d + 1}\), find \(\{a_{1}, a_{2},
-		           \ldots, a_{l}\}\) and \(\{\mathcal{A}_{1}, \mathcal{A}_{2},
-		           \ldots, \mathcal{A}_{l}\}\), then replace \(\mathcal{F}\)
-		           with \((\mathcal{F} \setminus \mathcal{A}_{1}) \cup
-		           \{\{a_{1}, a_{2}, \ldots, a_{l}\}\}\).
+		\item[R1:] If \(|\mathcal{F}| > k^{d + 1}\), find \(\{a_{1}, \ldots,
+		           a_{l}\}\) and \(\{\mathcal{A}_{1}, \ldots,
+		           \mathcal{A}_{l}\}\), then replace \(\mathcal{F}\) with
+		           \((\mathcal{F} \setminus \mathcal{A}_{1}) \cup \{\{a_{1},
+		           \ldots, a_{l}\}\}\).
 	\end{itemize}
 	Note that after applying R1, the condition that for any two distinct sets
 	\(A, B \in \mathcal{F}\), \(|A \cap B| \leqslant d\) still holds, as the
@@ -218,11 +217,11 @@
 	
 	\medskip
 	
-	The sets \(\{a_{1}, a_{2}, \ldots, a_{l}\}\) and \(\{\mathcal{A}_{1},
-	\mathcal{A}_{2}, \ldots, \mathcal{A}_{l}\}\) can be found in polynomial time
-	with respect to the input size. To identify \(a_{i}\), we iterate through
-	each \(a \in \bigcup \mathcal{A}_{i - 1}\), checking which sets in
-	\(\mathcal{A}_{i - 1}\) contain it.
+	The sets \(\{a_{1}, \ldots, a_{l}\}\) and \(\{\mathcal{A}_{1}, \ldots,
+	\mathcal{A}_{l}\}\) can be found in polynomial time with respect to the
+	input size. To identify \(a_{i}\), we iterate through each \(a \in \bigcup
+	\mathcal{A}_{i - 1}\), checking which sets in \(\mathcal{A}_{i - 1}\)
+	contain it.
 	
 	\medskip
 	
