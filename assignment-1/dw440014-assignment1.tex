@@ -301,30 +301,23 @@
 	Since the class of graphs that can be partitioned into a clique and an
 	independent set is closed under taking subgraphs, \(G_{i + 1}[Z]\) must be a
 	split graph. \(G_{i + 1}[W] = G_{i}[W]\) is also a split graph, because
-	\(X_{i}\) is a solution for \(G_{i}\). Note that we can verify if a graph is
-	a split graph in linear time, as well as find its \((C, I)\)-partition,
-	where \(C\) is a clique and \(I\) is an independent set.
+	\(X_{i}\) is a solution for \(G_{i}\).
 	
 	\medskip
 	
-	Let \((C_{Z}, I_{Z})\) be the \((C, I)\)-partition of \(G_{i + 1}[Z]\). If
-	no such partition exists, we move to the next subset of \(X_{i + 1}'\). The
-	partition is not necessarily unique; this ambiguity arises when there are no
-	edges within \(Z\) in \(G_{i + 1}\). In this case, we consider every
-	possible choice of the clique in \(G_{i + 1}[Z]\) (a single vertex or an
-	empty set), which adds a factor of \(\mathcal{O}(k)\) to the time
-	complexity. However, this factor is at most polynomial in \(n\), so it does
-	not affect the overall complexity. Henceforth, we assume \((C_{Z}, I_{Z})\)
-	is unique.
+	We will iterate over every possible \((C, I)\)-partition of
+	\(G_{i + 1}[Z]\). There are \(2^l\) such potential partitions. Let \((C_{Z},
+	I_{Z})\) be the current \((C, I)\)-partition of \(G_{i + 1}[Z]\) under
+	consideration. Note that checking the validity of such a partition can be
+	done in polynomial time.
 	
 	\medskip
 	
-	Let \((C_{W}, I_{W})\) denote the \((C, I)\)-partition of \(G_{i + 1}[W]\).
-	Uniqueness here is irrelevant. Let \((C^{\ast}, I^{\ast})\) be the
-	\((C, I)\)-partition of \(G_{i + 1}[Z \cup W']\) that we seek. Since
-	\((C_{Z}, I_{Z})\) is unique, it must hold that \(C_{Z} \subseteq C^{\ast}\)
-	and \(I_{Z} \subseteq I^{\ast}\). Thus, for each \(v \in W\), we have three
-	choices:
+	Let \((C_{W}, I_{W})\) denote the \((C, I)\)-partition of \(G_{i + 1}[W]\)
+	that has been found in the previous iteration. Let \((C^{\ast}, I^{\ast})\)
+	be the \((C, I)\)-partition of \(G_{i + 1}[Z \cup W']\) that we seek. It
+	must hold that \(C_{Z} \subseteq C^{\ast}\) and \(I_{Z} \subseteq
+	I^{\ast}\). Thus, for each \(v \in W\), we have three options:
 	\begin{enumerate}
 		\item add \(v\) to \(C^{\ast}\),
 		\item add \(v\) to \(I^{\ast}\),
@@ -388,5 +381,7 @@
 	
 	\medskip
 	
-	The total time complexity is \(2^{k} \cdot n^{\mathcal{O}(1)}\).
+	The total time complexity is
+	\[ \sum_{l = 1}^{k + 1} \binom{k + 1}{l} 2^{l} \cdot n^{\mathcal{O}(1)} \ =
+	\ \left( 3^{k + 1} - 1 \right) \cdot n^{\mathcal{O}(1)} \text{.} \]
 \end{document}
