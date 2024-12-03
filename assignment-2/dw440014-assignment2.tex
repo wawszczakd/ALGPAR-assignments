@@ -1,0 +1,121 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[a4paper, margin = 2 cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{Parameterized Algorithms assignment 2}
+\author{Dominik Wawszczak}
+\date{2024-12-01}
+
+\begin{document}
+	\setlength{\parindent}{0 cm}
+	
+	Dominik Wawszczak \hfill Parameterized Algorithms
+	
+	Student ID Number: 440014 \hfill Assignment 2
+	
+	Group Number: 1
+	
+	\bigskip
+	\hrule
+	\bigskip
+	
+	\textbf{Problem 1}
+	
+	\medskip
+	
+	If \(G\) is not connected, we can analyze each connected component
+	independently, subtracting the combined sizes of all other components from
+	\(k\). Thus, for the remainder of the solution, we assume that \(G\) is
+	connected.
+	
+	\medskip
+	
+	
+	If there exists a subset of vertices \(X\) such that \(|X| \leqslant k\) and
+	\(G \setminus X\) is a tree, then \(\text{tw}(G) \leqslant k + 1\), as
+	\(\text{tw}(G \setminus X) = 1\), where \(\text{tw}\) denotes treewidth. We
+	will use the algorithm presented in the lecture, which runs in time \(27^{l}
+	\cdot l^{\mathcal{O}(1)} \cdot n^{2}\), where \(l\) is the target treewidth
+	and \(n\) is the number of vertices. We apply it to \(G\) with \(l = k +
+	1\). The algorithm will yield one of two possible outcomes:
+	\begin{enumerate}
+		\item Confirmation that \(\text{tw}(G) > k + 1\).
+		      
+		      In this case, we conclude that no such subset \(X\) exists.
+		
+		\item A tree decomposition of width at most \(4k + 8\).
+		      
+		      The remainder of the solution focuses on this scenario.
+	\end{enumerate}
+	
+	\medskip
+	
+	We now proceed with dynamic programming, assuming the decomposition is nice.
+	For any subtree \(H\) of the decomposition and its boundary \(\partial H\),
+	let \(f : V(\partial H) \to \{0, \ldots, 4k + 9\}\). Define
+	\(\text{dp}_{H}(f)\) as the size of the minimum set \(Y \subseteq
+	V(H \setminus \partial H)\) satisfying the following conditions:
+	\begin{enumerate}
+		\item \(H \setminus \big( Y \cup f^{-1}(0) \big)\) is a forest,
+		\item for all \(u, v \in V(\partial H) \setminus f^{-1}(0)\), \(u\) and
+		\(v\) are in the same connected component of \(H \setminus \big( Y \cup
+		f^{-1}(0) \big)\) if and only if \(f(u) = f(v)\).
+	\end{enumerate}
+	If no such set \(Y\) exists for a given \(f\), we define \(\text{dp}_{H}(f)
+	= \infty\).
+	
+	\medskip
+	
+	To compute \(\text{dp}_{H}\), we consider the following cases:
+	\begin{enumerate}
+		\item \(H = \text{introduceVertex}(H', u)\)
+		      
+		      Here, \(\text{dp}_{H}(f) = \min(\{\text{dp}_{H'}(f') \ : \ f =
+		      f'[u \mapsto f(u)] \ \wedge \ f'^{-1}(f(u)) = \emptyset\})\),
+		      where \(\min(\emptyset) = \infty\). We use the notation
+		      \(f[a \mapsto b]\) to denote the function \(g\) defined by:
+		      \[ g(x) \ = \ \begin{cases} b \text{,} & \text{if} \ x = a
+		      \text{,} \\ f(x) \text{,} & \text{otherwise.} \end{cases} \]
+		
+		\item \(H = \text{introduceEdge}(H', u, v)\)
+		      
+		      In this case, \(\text{dp}_{H}(f) = \min(\{\text{dp}_{H'}(f') \ : \
+		      f'(u) \neq f'(v) \ \wedge \ (f'(w) = f'(u) \ \vee \ f'(w) = f'(v))
+		      \ \Rightarrow \ f(w) = f(u) = f(v)\})\).
+		
+		\item \(H = \text{forgetVertex}(H', u)\)
+		      
+		      Here, \(\text{dp}_{H}(f) = \min(\{\text{dp}_{H'}(f') + [k = 0] \ :
+		      k \in \{0, \ldots, 4k + 9\} \ \wedge \ f' = f[u \mapsto k]\})\),
+		      where \([P]\) denotes the Iverson bracket, i.e., \([P] = 1\) if
+		      \(P\) is true, and \([P] = 0\) otherwise.
+		
+		\item \(H = \text{merge}(H', H'')\)
+		      
+		      In this case \(\partial H' = \partial H''\), and we calculate
+		      \(\text{dp}_{H}\) as \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) +
+		      dp_{H''}(f)\).
+	\end{enumerate}
+	The answer is \(\text{dp}_{T}(\text{empty function}) \leqslant k\), where
+	\(T\) is the entire decomposition.
+	
+	\medskip
+	
+	The total complexity is bounded by
+	\[ 27^{k + 1} \cdot (k + 1)^{\mathcal{O}(1)} \cdot n^{2} +
+	n^{\mathcal{O}(1)} \cdot \left( (4k + 10)^{4k + 10} \right)^{2} \text{,} \]
+	thus this algorithm is FPT when parameterized by \(k\).
+\end{document}
