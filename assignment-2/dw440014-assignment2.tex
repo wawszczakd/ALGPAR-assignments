@@ -129,10 +129,10 @@
 		      a]\})\), where \([P]\) denotes the Iverson bracket, i.e., \([P] =
 		      1\) if \(P\) is true, and \([P] = 0\) otherwise.
 		      
-		      Additionally, we must check whether \(f^{-1}(a) = \emptyset\). If
-		      this condition holds, we set \(\text{dp}_{H}(f) = -\infty\),
-		      except when \(H\) represents the entire decomposition, in which
-		      case this check is omitted.
+		      Additionally, if \(a\) is not zero, we must check whether
+		      \(f^{-1}(a) = \emptyset\). If this condition holds, we set
+		      \(\text{dp}_{H}(f) = -\infty\), except when \(H\) represents the
+		      entire decomposition, in which case this check is omitted.
 		
 		\item \(H = \text{merge}(H', H'')\)
 		      
@@ -240,4 +240,81 @@
 	\[ e^{kl} (kl)^{\mathcal{O}(\log kl)} \big( n \log n + \mathcal{O} \big(
 	(kl)^l k (n + m) + (kl)^{kl} k^{3} l \big) \big) \text{,} \]
 	which is also FPT when parameterized by \(k + l\), completing the proof.
+	
+	\bigskip
+	
+	\textbf{Problem 3}
+	
+	\medskip
+	
+	Without loss of generality, assume the decomposition is nice. For any
+	subtree \(H\) of the decomposition and its boundary \(\partial H\), let \(f
+	: V(\partial H) \to \{0, \ldots, t + 1\}\) be a function with the property
+	that if \(f(v), f(u) \neq 0\) and \(f(v) = f(u)\), then \(v = u\), for any
+	\(v, u \in V(D)\). Define \(\text{dp}_{H}(f)\) as the size of the maximum
+	set \(Y \subseteq V(H \setminus \partial H)\) satisfying the following
+	conditions:
+	\begin{enumerate}
+		\item \(H \setminus \big( Y \cup f^{-1}(0) \big)\) is acyclic.
+		
+		\item There exists an ordering \(\sigma\) of the vertices of \(H
+		      \setminus \big( Y \cup f^{-1}(0) \big)\) such that for any edge
+		      \((v, u) \in E(H \setminus \big( Y \cup f^{-1}(0) \big)\), it
+		      holds that \(\sigma(v) < \sigma(u)\). Moreover, for any \(v, u \in
+		      V(\partial H) \setminus f^{-1}(0)\), \(f(v) < f(u)\) if and only
+		      if \(\sigma(v) < \sigma(u)\).
+		      
+		      Note that this ordering is not necessarily unique. We only require
+		      the existence of at least one such ordering for a given \(f\).
+	\end{enumerate}
+	
+	\medskip
+	
+	We compute \(\text{dp}_{H}\) by considering the following cases:
+	\begin{enumerate}
+		\item \(H = \emptyset\)
+		      
+		      Here, simply set \(\text{dp}_{H} = 0\).
+		
+		\item \(H = \text{introduceVertex}(H', v)\)
+		      
+		      In this case, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') \ : \
+		      f = f'[v \mapsto a] \ \wedge \ (f'^{-1}(a) = \emptyset \ \vee \ a
+		      = 0\})\).
+		
+		\item \(H = \text{introduceEdge}(H', v, u)\)
+		      
+		      Here,
+		      \[ \text{dp}_{H}(f) \ = \ \begin{cases} \text{dp}_{H'}(f) \text{,}
+		      & \text{if} \ f(v) = 0 \ \text{or} \ f(u) = 0 \text{,} \\
+		      \text{dp}_{H'}(f) \text{,} & \text{if} \ f(v) \neq 0 \ \text{and}
+		      \ f(u) \neq 0 \ \text{and} \ f(v) < f(u) \text{,} \\
+		      -\infty \text{,} & \text{otherwise.} \end{cases} \]
+		
+		\item \(H = \text{forgetVertex}(H', v)\)
+		      
+		      In this case, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') +
+		      [f'(v) \neq 0] \ : \ f' \ \text{is good}\})\), where \(f'\) is
+		      \textit{good} if, for any \(w, u \in V(\partial H)\) the condition
+		      \(f(w) < f(u) \iff f'(w) < f'(u)\) holds.
+		      
+		      If no good function \(f'\) exists for a given \(f\), set
+		      \(\text{dp}_{H}(f) = -\infty\).
+		
+		\item \(H = \text{merge}(H', H'')\)
+		      
+		      Here, \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) +
+		      \text{dp}_{H''}(f)\), since \(\partial H' = \partial H''\).
+	\end{enumerate}
+	The final answer is \(\text{dp}_{T}(\text{empty function}) \geqslant V(D) -
+	k\), where \(T\) represents the entire decomposition.
+	
+	\medskip
+	
+	The total time complexity is
+	\[ \big( (t + 2)^{t + 2} \big)^{2} \cdot n^{\mathcal{O}(1)} \ = \
+	(t + 2)^{2t + 4} \cdot n^{\mathcal{O}(1)} \ = \ 2^{(2t + 4) \log (t + 2)}
+	\cdot n^{\mathcal{O}(1)} \ = \ 2^{\mathcal{O}(t \log t)} \cdot
+	n^{\mathcal{O}(1)} \text{,} \]
+	which concludes the proof.
 \end{document}
