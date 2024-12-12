@@ -14,6 +14,7 @@
 \usepackage{mathtools}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{enumitem}
 
 \title{Parameterized Algorithms assignment 2}
 \author{Dominik Wawszczak}
@@ -38,7 +39,7 @@
 	
 	If \(G\) is not connected, we can analyze each connected component
 	independently, subtracting the combined sizes of all other components from
-	\(k\). Thus, for the remainder of the solution, we assume that \(G\) is
+	\(k\). Therefore, for the remainder of the solution, we assume that \(G\) is
 	connected.
 	
 	\medskip
@@ -65,58 +66,90 @@
 	We now proceed with dynamic programming, assuming the decomposition is nice.
 	For any subtree \(H\) of the decomposition and its boundary \(\partial H\),
 	let \(f : V(\partial H) \to \{0, \ldots, 4k + 9\}\). Define
-	\(\text{dp}_{H}(f)\) as the size of the minimum set \(Y \subseteq
+	\(\text{dp}_{H}(f)\) as the size of the maximum set \(Y \subseteq
 	V(H \setminus \partial H)\) satisfying the following conditions:
 	\begin{enumerate}
-		\item \(H \setminus \big( Y \cup f^{-1}(0) \big)\) is a forest,
-		\item for all \(v, u \in V(\partial H) \setminus f^{-1}(0)\), \(v\) and
-		\(u\) are in the same connected component of \(H \setminus \big( Y \cup
-		f^{-1}(0) \big)\) if and only if \(f(v) = f(u)\).
+		\item \(H \setminus \big( Y \cup f^{-1}(0) \big)\) is a forest.
+		
+		\item Each tree in \(H \setminus \big( Y \cup f^{-1}(0) \big)\) contains
+		      at least one vertex from \(\partial H\), unless \(\partial H\) is
+		      empty (a special case when \(H\) is the entire decomposition).
+		      
+		      Note that this implies there are at most \(|V(\partial H)|\) trees
+		      in \(H \setminus \big( Y \cup f^{-1}(0) \big)\).
+		
+		\item For all \(v, u \in V(\partial H) \setminus f^{-1}(0)\), \(v\) and
+		      \(u\) belong to the same connected component (tree) of \(H
+		      \setminus \big( Y \cup f^{-1}(0) \big)\) if and only if \(f(v) =
+		      f(u)\).
 	\end{enumerate}
-	If no such set \(Y\) exists for a given \(f\), we define \(\text{dp}_{H}(f)
-	= \infty\).
 	
 	\medskip
 	
 	To compute \(\text{dp}_{H}\), we consider the following cases:
 	\begin{enumerate}
+		\item \(H = \emptyset\)
+		      
+		      In this case, we simply set \(\text{dp}_{H}(\text{empty function})
+		      = 0\).
+		
 		\item \(H = \text{introduceVertex}(H', v)\)
 		      
-		      Here, \(\text{dp}_{H}(f) = \min(\{\text{dp}_{H'}(f') \ : \ f =
-		      f'[v \mapsto f(v)] \ \wedge \ f'^{-1}(f(v)) = \emptyset\})\),
-		      where \(\min(\emptyset) = \infty\). We use the notation
-		      \(f[a \mapsto b]\) to denote the function \(g\) defined by:
-		      \[ g(x) \ = \ \begin{cases} b \text{,} & \text{if} \ x = a
-		      \text{,} \\ f(x) \text{,} & \text{otherwise.} \end{cases} \]
+		      Here, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') \ : \ f =
+		      f'[v \mapsto a] \ \wedge \ (f^{-1}(a) = \{v\} \ \vee \ a =
+		      0)\})\). We use the notation \(f[p \mapsto q]\) to denote the
+		      function \(g\) defined by:
+		      \[ g(x) \ = \ \begin{cases} q \text{,} & \text{if} \ x = p
+		      \text{,} \\
+		      f(x) \text{,} & \text{otherwise.} \end{cases} \]
 		
 		\item \(H = \text{introduceEdge}(H', v, u)\)
 		      
-		      In this case, \(\text{dp}_{H}(f) = \min(\{\text{dp}_{H'}(f') \ : \
-		      f'(v) \neq f'(u) \ \wedge \ (f'(w) = f'(v) \ \vee \ f'(w) = f'(u))
-		      \ \Rightarrow \ f(w) = f(v) = f(u)\})\).
+		      In this case,
+		      \[ \text{dp}_{H}(f) \ = \ \begin{cases} \text{dp}_{H'}(f) \text{,}
+		      & \text{if} \ f(u) = 0 \ \text{or} \ f(v) = 0 \text{,} \\
+		      \max(\{\text{dp}_{H'}(f') \ : \ f' \ \text{is good}\}) \text{,} &
+		      \text{otherwise,} \end{cases} \]
+		      where \(f'\) is \textit{good} if it satisfies:
+		      \begin{enumerate}[label=\theenumi.\arabic*]
+		          \item \(f'(v) \neq 0\) and \(f'(u) \neq 0\) and \(f'(v) \neq
+		                f'(u)\).
+		          \item For all \(w \in V(\partial H)\), if \(f'(w) \in \{f'(v),
+		                f'(u)\}\), then \(f(w) = f'(v)\). Otherwise, \(f(w) =
+		                f'(w)\).
+		      \end{enumerate}
+		      
+		      If no good function \(f'\) exists for a given \(f\), set
+		      \(\text{dp}_{H}(f) = -\infty\).
 		
 		\item \(H = \text{forgetVertex}(H', v)\)
 		      
-		      Here, \(\text{dp}_{H}(f) = \min(\{\text{dp}_{H'}(f') + [k = 0] \ :
-		      k \in \{0, \ldots, 4k + 9\} \ \wedge \ f' = f[v \mapsto k]\})\),
-		      where \([P]\) denotes the Iverson bracket, i.e., \([P] = 1\) if
-		      \(P\) is true, and \([P] = 0\) otherwise.
+		      Here, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') + [a \neq 0]
+		      \ : \ a \in \{0, \ldots, 4k + 9\} \ \wedge \ f' = f[v \mapsto
+		      a]\})\), where \([P]\) denotes the Iverson bracket, i.e., \([P] =
+		      1\) if \(P\) is true, and \([P] = 0\) otherwise.
+		      
+		      Additionally, we must check whether \(f^{-1}(a) = \emptyset\). If
+		      this condition holds, we set \(\text{dp}_{H}(f) = -\infty\),
+		      except when \(H\) represents the entire decomposition, in which
+		      case this check is omitted.
 		
 		\item \(H = \text{merge}(H', H'')\)
 		      
 		      In this case \(\partial H' = \partial H''\), and we calculate
 		      \(\text{dp}_{H}\) as \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) +
-		      dp_{H''}(f)\).
+		      \text{dp}_{H''}(f)\).
 	\end{enumerate}
-	The answer is \(\text{dp}_{T}(\text{empty function}) \leqslant k\), where
-	\(T\) is the entire decomposition.
+	The answer is \(\text{dp}_{T}(\text{empty function}) \geqslant V(G) - k\),
+	where \(T\) is the full decomposition.
 	
 	\medskip
 	
-	The total complexity is bounded by
+	The total time complexity is bounded by
 	\[ 27^{k + 1} \cdot (k + 1)^{\mathcal{O}(1)} \cdot n^{2} +
-	n^{\mathcal{O}(1)} \cdot \left( (4k + 10)^{4k + 10} \right)^{2} \text{,} \]
-	thus this algorithm is FPT when parameterized by \(k\).
+	n^{\mathcal{O}(1)} \cdot \left( (4k + 10)^{4k + 10} \right)^{2} \text{.} \]
+	Thus, this algorithm is FPT when parameterized by \(k\), which completes the
+	proof.
 	
 	\bigskip
 	
@@ -128,7 +161,7 @@
 	maximum total number of vertices along the paths, excluding the start and
 	finish vertices. We color each vertex (excluding the start and finish
 	vertices) with one of \(c\) colors. For each \(i \in \{1, \ldots, k\}\), let
-	\(\text{dp}_{i}[v][C]\) be true if and only if there exists a path from
+	\(\text{dp}_{i}(v, C)\) be true if and only if there exists a path from
 	\(s_{i}\) to \(v\) such that the set of vertex colors on this path equals
 	exactly \(C\), with no two vertices sharing the same color. Here, we only
 	consider subsets \(C\) of size at most \(l - 1\).
@@ -138,18 +171,18 @@
 	The values of \(\text{dp}_{i}\) are initially set to \(\text{false}\) and
 	are then computed using the following rules:
 	\begin{enumerate}
-		\item \(\text{dp}_{i}[s_{i}][\emptyset] \ = \ \text{true}\).
-		\item \(\text{dp}_{i}[v][C] \ = \ \bigvee\limits_{(u, v) \in E(G)}
-		      (\text{color}[v] \in C \ \wedge \
-		      \text{dp}_{i}[u][C \setminus \{\text{color}[v]\}])\), for all
-		      \(v \in V(G) \setminus \bigcup\limits_{j = 1}^{k} \{s_{j}, t_{j}\}\).
-		\item \(\text{dp}_{i}[t_{i}][C] \ = \ \bigvee\limits_{(u, t_{i}) \in
-		      E(G)} \text{dp}_{i}[u][C]\).
+		\item \(\text{dp}_{i}(s_{i}, \emptyset) \ = \ \text{true}\).
+		\item \(\text{dp}_{i}(v, C) \ = \ \bigvee\limits_{(u, v) \in E(D)}
+		      (\text{color}(v) \in C \ \wedge \ \text{dp}_{i}(u, C \setminus
+		      \{\text{color}(v)\}))\), for all \(v \in V(D) \setminus
+		      \bigcup\limits_{j = 1}^{k} \{s_{j}, t_{j}\}\).
+		\item \(\text{dp}_{i}(t_{i}, C) \ = \ \bigvee\limits_{(u, t_{i}) \in
+		      E(D)} \text{dp}_{i}(u, C)\).
 	\end{enumerate}
 	To compute these values correctly, ensuring that no \(\text{dp}\) entry is
 	referenced before it has been calculated, subsets \(C\) are considered in
-	increasing order of size. Subsequently, \(\text{dp}_{i}[v][C]\) is filled
-	for all \(v \in V(G)\).
+	increasing order of size. Subsequently, \(\text{dp}_{i}(v, C)\) is filled
+	for all \(v \in V(D)\).
 	
 	\medskip
 	
@@ -158,7 +191,7 @@
 	\sum\limits_{j = 0}^{l - 1} c^{j} \ = \ \frac{c^{l} - 1}{c - 1} \ \leqslant
 	\ c^{l} \ = \ (k (l - 1))^{l} \ \leqslant \ (kl)^{l} \text{.} \]
 	Thus, this computation requires \(\mathcal{O} \big( (kl)^{l} k (n + m)
-	\big)\) time, where \(n = |V(G)|\), and \(m = |E(G)|\).
+	\big)\) time, where \(n = |V(D)|\), and \(m = |E(D)|\).
 	
 	\medskip
 	
@@ -171,8 +204,8 @@
 		      
 		      This step can be done in \(\mathcal{O}(k^{3} l)\) time.
 		
-		\item Check whether \(\text{dp}_{1}[t_{1}][C_{1}] = \ldots =
-		      \text{dp}_{k}[t_{k}][C_{k}] = \text{true}\).
+		\item Check whether \(\text{dp}_{1}(t_{1}, C_{1}) = \ldots =
+		      \text{dp}_{k}(t_{k}, C_{k}) = \text{true}\).
 		      
 		      In this case, the answer to the problem is ,,Yes.''.
 	\end{enumerate}
