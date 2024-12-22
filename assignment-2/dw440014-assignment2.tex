@@ -66,22 +66,24 @@
 	We now proceed with dynamic programming, assuming the decomposition is nice.
 	For any subtree \(H\) of the decomposition and its boundary \(\partial H\),
 	let \(f : V(\partial H) \to \{0, \ldots, 4k + 9\}\). Define
-	\(\text{dp}_{H}(f)\) as the size of the maximum set \(Y \subseteq
-	V(H \setminus \partial H)\) satisfying the following conditions:
+	\(\text{dp}_{H}(f)\) as the size of the maximum set \(Y \subseteq V(H)
+	\setminus V(\partial H)\) satisfying the following conditions:
 	\begin{enumerate}
-		\item \(H \setminus \big( Y \cup f^{-1}(0) \big)\) is a forest.
+		\item \(Y \cup \big( V(\partial H) \setminus f^{-1}(0) \big)\) is a
+		      forest.
 		
-		\item Each tree in \(H \setminus \big( Y \cup f^{-1}(0) \big)\) contains
-		      at least one vertex from \(\partial H\), unless \(\partial H\) is
-		      empty (a special case when \(H\) is the entire decomposition).
+		\item Each tree in \(Y \cup \big( V(\partial H) \setminus f^{-1}(0)
+		      \big)\) contains at least one vertex from \(\partial H\), unless
+		      \(\partial H\) is empty (a special case when \(H\) is the entire
+		      decomposition).
 		      
 		      Note that this implies there are at most \(|V(\partial H)|\) trees
-		      in \(H \setminus \big( Y \cup f^{-1}(0) \big)\).
+		      in \(Y \cup \big( V(\partial H) \setminus f^{-1}(0) \big)\).
 		
 		\item For all \(v, u \in V(\partial H) \setminus f^{-1}(0)\), \(v\) and
-		      \(u\) belong to the same connected component (tree) of \(H
-		      \setminus \big( Y \cup f^{-1}(0) \big)\) if and only if \(f(v) =
-		      f(u)\).
+		      \(u\) belong to the same connected component (tree) of \(Y \cup
+		      \big( V(\partial H) \setminus f^{-1}(0) \big)\) if and only if
+		      \(f(v) = f(u)\).
 	\end{enumerate}
 	
 	\medskip
@@ -97,11 +99,11 @@
 		      
 		      Here, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') \ : \ f =
 		      f'[v \mapsto a] \ \wedge \ (f^{-1}(a) = \{v\} \ \vee \ a =
-		      0)\})\). We use the notation \(f[p \mapsto q]\) to denote the
-		      function \(g\) defined by:
-		      \[ g(x) \ = \ \begin{cases} q \text{,} & \text{if} \ x = p
+		      0)\})\). We use the notation \(g[p \mapsto q]\) to denote the
+		      function \(h\) defined by:
+		      \[ h(x) \ = \ \begin{cases} q \text{,} & \text{if} \ x = p
 		      \text{,} \\
-		      f(x) \text{,} & \text{otherwise.} \end{cases} \]
+		      g(x) \text{,} & \text{otherwise.} \end{cases} \]
 		
 		\item \(H = \text{introduceEdge}(H', v, u)\)
 		      
@@ -140,7 +142,7 @@
 		      \(\text{dp}_{H}\) as \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) +
 		      \text{dp}_{H''}(f)\).
 	\end{enumerate}
-	The answer is \(\text{dp}_{T}(\text{empty function}) \geqslant V(G) - k\),
+	The answer is \(\text{dp}_{T}(\text{empty function}) \geqslant |V(G)| - k\),
 	where \(T\) is the full decomposition.
 	
 	\medskip
@@ -171,13 +173,13 @@
 	The values of \(\text{dp}_{i}\) are initially set to \(\text{false}\) and
 	are then computed using the following rules:
 	\begin{enumerate}
-		\item \(\text{dp}_{i}(s_{i}, \emptyset) \ = \ \text{true}\).
-		\item \(\text{dp}_{i}(v, C) \ = \ \bigvee\limits_{(u, v) \in E(D)}
+		\item \(\text{dp}_{i}(s_{i}, \emptyset) = \text{true}\).
+		\item \(\text{dp}_{i}(v, C) = \bigvee\limits_{(u, v) \in E(D)}
 		      (\text{color}(v) \in C \ \wedge \ \text{dp}_{i}(u, C \setminus
 		      \{\text{color}(v)\}))\), for all \(v \in V(D) \setminus
 		      \bigcup\limits_{j = 1}^{k} \{s_{j}, t_{j}\}\).
-		\item \(\text{dp}_{i}(t_{i}, C) \ = \ \bigvee\limits_{(u, t_{i}) \in
-		      E(D)} \text{dp}_{i}(u, C)\).
+		\item \(\text{dp}_{i}(t_{i}, C) = \bigvee\limits_{(u, t_{i}) \in E(D)}
+		      \text{dp}_{i}(u, C)\).
 	\end{enumerate}
 	To compute these values correctly, ensuring that no \(\text{dp}\) entry is
 	referenced before it has been calculated, subsets \(C\) are considered in
@@ -249,24 +251,18 @@
 	
 	Without loss of generality, assume the decomposition is nice. For any
 	subtree \(H\) of the decomposition and its boundary \(\partial H\), let \(f
-	: V(\partial H) \to \{0, \ldots, t + 1\}\) be a function with the property
-	that if \(f(v), f(u) \neq 0\) and \(f(v) = f(u)\), then \(v = u\), for any
-	\(v, u \in V(D)\). Define \(\text{dp}_{H}(f)\) as the size of the maximum
-	set \(Y \subseteq V(H \setminus \partial H)\) satisfying the following
-	conditions:
+	: V(\partial H) \to \{1, \ldots, t + 1\}\) be an injective function. Define
+	\(\text{dp}_{H}(f)\) as the size of the largest set \(Y \subseteq E(H)\)
+	such that there exists an ordering \(\sigma\) of the vertices of \(H\)
+	satisfying the following conditions:
 	\begin{enumerate}
-		\item \(H \setminus \big( Y \cup f^{-1}(0) \big)\) is acyclic.
-		
-		\item There exists an ordering \(\sigma\) of the vertices of \(H
-		      \setminus \big( Y \cup f^{-1}(0) \big)\) such that for any edge
-		      \((v, u) \in E(H \setminus \big( Y \cup f^{-1}(0) \big)\), it
-		      holds that \(\sigma(v) < \sigma(u)\). Moreover, for any \(v, u \in
-		      V(\partial H) \setminus f^{-1}(0)\), \(f(v) < f(u)\) if and only
-		      if \(\sigma(v) < \sigma(u)\).
-		      
-		      Note that this ordering is not necessarily unique. We only require
-		      the existence of at least one such ordering for a given \(f\).
+		\item For any edge \((v, u) \in Y\), it holds that \(\sigma(v) <
+		      \sigma(u)\).
+		\item For any \(v, u \in V(\partial H)\), \(f(v) < f(u)\) if and only if
+		      \(\sigma(v) < \sigma(u)\).
 	\end{enumerate}
+	Note that this ordering is not necessarily unique. We only require the
+	existence of at least one such ordering for a given \(f\).
 	
 	\medskip
 	
@@ -274,46 +270,43 @@
 	\begin{enumerate}
 		\item \(H = \emptyset\)
 		      
-		      Here, simply set \(\text{dp}_{H} = 0\).
+		      Here, simply set \(\text{dp}_{H}(\text{empty function}) = 0\).
 		
 		\item \(H = \text{introduceVertex}(H', v)\)
 		      
 		      In this case, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') \ : \
-		      f = f'[v \mapsto a] \ \wedge \ (f'^{-1}(a) = \emptyset \ \vee \ a
-		      = 0\})\).
+		      f = f'[v \mapsto a] \ \wedge \ f^{-1}(a) = \{v\}\})\).
 		
 		\item \(H = \text{introduceEdge}(H', v, u)\)
 		      
 		      Here,
-		      \[ \text{dp}_{H}(f) \ = \ \begin{cases} \text{dp}_{H'}(f) \text{,}
-		      & \text{if} \ f(v) = 0 \ \text{or} \ f(u) = 0 \text{,} \\
-		      \text{dp}_{H'}(f) \text{,} & \text{if} \ f(v) \neq 0 \ \text{and}
-		      \ f(u) \neq 0 \ \text{and} \ f(v) < f(u) \text{,} \\
-		      -\infty \text{,} & \text{otherwise.} \end{cases} \]
+		      \[ \text{dp}_{H}(f) \ = \ \begin{cases} \text{dp}_{H'}(f) + 1
+		      \text{,} & \text{if} \ f(v) < f(u) \text{,} \\
+		      \text{dp}_{H'}(f) \text{,} & \text{otherwise.} \end{cases} \]
 		
 		\item \(H = \text{forgetVertex}(H', v)\)
 		      
-		      In this case, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') +
-		      [f'(v) \neq 0] \ : \ f' \ \text{is good}\})\), where \(f'\) is
-		      \textit{good} if, for any \(w, u \in V(\partial H)\) the condition
-		      \(f(w) < f(u) \iff f'(w) < f'(u)\) holds.
-		      
-		      If no good function \(f'\) exists for a given \(f\), set
-		      \(\text{dp}_{H}(f) = -\infty\).
+		      In this case, \(\text{dp}_{H}(f) = \max(\{\text{dp}_{H'}(f') \ : \
+		      f' \ \text{is good}\})\), where \(f'\) is \textit{good} if, for
+		      any \(u, w \in V(\partial H)\) the condition \(f'(u) < f'(w) \iff
+		      f(u) < f(w)\) holds.
 		
 		\item \(H = \text{merge}(H', H'')\)
 		      
 		      Here, \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) +
-		      \text{dp}_{H''}(f)\), since \(\partial H' = \partial H''\).
+		      \text{dp}_{H''}(f) - |\{(v, u) \ : \ (v, u) \in E(\partial H) \
+		      \wedge \ f(v) < f(u)\}|\), since \(\partial H = \partial H' =
+		      \partial H''\) and we need to subtract the edges that were counted
+		      twice.
 	\end{enumerate}
-	The final answer is \(\text{dp}_{T}(\text{empty function}) \geqslant V(D) -
-	k\), where \(T\) represents the entire decomposition.
+	The final answer is \(\text{dp}_{T}(\text{empty function}) \geqslant |E(D)|
+	- k\), where \(T\) represents the entire decomposition.
 	
 	\medskip
 	
 	The total time complexity is
-	\[ \big( (t + 2)^{t + 2} \big)^{2} \cdot n^{\mathcal{O}(1)} \ = \
-	(t + 2)^{2t + 4} \cdot n^{\mathcal{O}(1)} \ = \ 2^{(2t + 4) \log (t + 2)}
+	\[ \big( (t + 1)^{t + 1} \big)^{2} \cdot n^{\mathcal{O}(1)} \ = \
+	(t + 1)^{2t + 2} \cdot n^{\mathcal{O}(1)} \ = \ 2^{(2t + 2) \log (t + 1)}
 	\cdot n^{\mathcal{O}(1)} \ = \ 2^{\mathcal{O}(t \log t)} \cdot
 	n^{\mathcal{O}(1)} \text{,} \]
 	which concludes the proof.
