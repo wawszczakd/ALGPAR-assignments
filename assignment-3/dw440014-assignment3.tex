@@ -1,0 +1,114 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[a4paper, margin = 2 cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\title{Parameterized Algorithms assignment 3}
+\author{Dominik Wawszczak}
+\date{2025-01-23}
+
+\begin{document}
+	\setlength{\parindent}{0 cm}
+	
+	Dominik Wawszczak \hfill Parameterized Algorithms
+	
+	Student ID Number: 440014 \hfill Assignment 3
+	
+	Group Number: 1
+	
+	\bigskip
+	\hrule
+	\bigskip
+	
+	\textbf{Problem 1}
+	
+	\medskip
+	
+	We will show an fpt-reduction from the \textsc{Multicolored Clique} problem
+	to the \textsc{Cut with Forbidden Pairs} problem. Let \((G, k)\), where
+	\(V(G) = (V_{1}, V_{2}, \ldots, V_{k})\), be an	instance of the
+	\textsc{Multicolored Clique} problem. For each \(i \in \{1, 2, \ldots,
+	k\}\), let \(V_{i} = \{v_{i, 1}, v_{i, 2}, \ldots, v_{i, n_{i}}\}\) denote
+	the set of vertices of color \(i\).
+	
+	\medskip
+	
+	We construct a directed graph \(D\) as follows:
+	\begin{enumerate}
+		\item Start with \(V(D) = \{s, t\}\) and \(E(D) = \emptyset\).
+		\item For each \(i \in \{1, 2, \ldots, k\}\):
+		      \begin{enumerate}[label=\theenumi.\arabic*]
+		          \item Add \(n_{i} - 1\) vertices to \(V(D)\), denoted as
+		                \(u_{i, 1}, u_{i, 2}, \ldots, u_{i, n_{i} - 1}\).
+		          \item For every \(v_{i, j} \in V_{i}\), add an arc
+		                \(a(v_{i, j})\) to \(E(D)\), where \(a(v_{i, j}) =
+		                (u_{i, j - 1}, u_{i, j})\). Here, \(u_{i, 0} = s\) and
+		                \(u_{i, n_{i}} = t\).
+		      \end{enumerate}
+	\end{enumerate}
+	Let \(\mathcal{S}\) be the set of all pairs of arcs in \(D\) whose
+	corresponding vertices are not adjacent in \(G\). Formally:
+	\[ \mathcal{S} \ = \ \{\{a(v_{i_{1}, j_{1}}), a(v_{i_{2}, j_{2}})\} \ : \
+	v_{i_{1}, j_{1}}, v_{i_{2}, j_{2}} \in V(G) \ \wedge \ \{v_{i_{1}, j_{1}},
+	v_{i_{2}, j_{2}}\} \notin E(G)\} \text{.} \]
+	The parameter \(k\) remains the same as in the original problem. Note that
+	the size of the constructed instance is polynomial in the size of the
+	original instance.
+	
+	\medskip
+	
+	We now prove the following equivalence:
+	\[ (G, k) \in \textsc{Multicolored Clique} \ \iff \ (D, \mathcal{S}, k) \in
+	\textsc{Cut with Forbidden Pairs} \text{.} \]
+	
+	First, assume there exists a multicolored clique \(C = \{v_{1, j_{1}},
+	v_{2, j_{2}}, \ldots, v_{k, j_{k}}\}\) in \(G\). Define \(F =
+	\{a(v_{1, j_{1}}), a(v_{2, j_{2}}), \ldots, a(v_{k, j_{k}})\}\). Since there
+	are exactly \(k\) paths from \(s\) to \(t\) in \(D\), and
+	\(a(v_{i, j_{i}})\) lies on the \(i\)-th path for each \(i\), \(F\)
+	intersects every path from \(s\) to \(t\). Furthermore, for any \(\{a_{1},
+	a_{2}\} \in \mathcal{S}\), \(|F \cap \{a_{1}, a_{2}\}| \leqslant 1\), as
+	otherwise \(C\) would not be a clique in \(G\).
+	
+	\medskip
+	
+	Conversely, assume there exists a set \(F \subseteq E(D)\) of size \(k\)
+	such that \(F\) intersects every path from \(s\) to \(t\), and \(|F \cap
+	\{a_{1}, a_{2}\}| \leqslant 1\) for any \(\{a_{1}, a_{2}\} \in
+	\mathcal{S}\). Let \(C = a^{-1}(F)\). Since \(F\) intersects every path from
+	\(s\) to \(t\), \(C\) contains exactly one vertex from each \(V_{i}\).
+	Additionally, for any two vertices \(v_{i_{1}, j_{i_{1}}},
+	v_{i_{2}, j_{i_{2}}} \in C\), they are adjacent in \(G\), as otherwise
+	\(\{a(v_{i_{1}, j_{i_{1}}}), a(v_{i_{2}, j_{i_{2}}})\}\) would belong to
+	\(\mathcal{S}\). Hence, \(C\) is a multicolored clique in \(G\).
+	
+	\medskip
+	
+	From the above, we conclude that the \textsc{Cut with Forbidden Pairs}
+	problem is \(\mathsf{W}[1]\)-hard when parameterized by \(k\).
+	
+	\medskip
+	
+	By the corollary 14.23 from the
+	\href{https://parameterized-algorithms.mimuw.edu.pl/}
+	{\textcolor{cyan}{Platypus Book}}, we know that there is no
+	\(f(k) \cdot n^{o(k)}\)-time algorithm for the \textsc{Multicolored Clique}
+	problem, for any computable function \(f\), assuming the Exponential Time
+	Hypothesis (ETH). By the observation 14.22 from the same book, this implies
+	that no \(f(k) \cdot n^{o(k)}\)-time algorithm exists for the \textsc{Cut
+	with Forbidden Pairs} problem under ETH, which completes the proof.
+\end{document}
