@@ -105,10 +105,100 @@
 	
 	By the corollary 14.23 from the
 	\href{https://parameterized-algorithms.mimuw.edu.pl/}
-	{\textcolor{cyan}{Platypus Book}}, we know that there is no
-	\(f(k) \cdot n^{o(k)}\)-time algorithm for the \textsc{Multicolored Clique}
-	problem, for any computable function \(f\), assuming the Exponential Time
-	Hypothesis (ETH). By the observation 14.22 from the same book, this implies
-	that no \(f(k) \cdot n^{o(k)}\)-time algorithm exists for the \textsc{Cut
-	with Forbidden Pairs} problem under ETH, which completes the proof.
+	{\textcolor{cyan}{Platypus Book}}, we know that there is no \(f(k) \cdot
+	n^{o(k)}\)-time algorithm for the \textsc{Multicolored Clique} problem, for
+	any computable function \(f\), assuming the Exponential Time Hypothesis
+	(ETH). By the observation 14.22 from the same book, this implies that no
+	\(f(k) \cdot n^{o(k)}\)-time algorithm exists for the \textsc{Cut with
+	Forbidden Pairs} problem under ETH, which completes the proof.
+	
+	\newpage
+	
+	\textbf{Problem 2}
+	
+	\medskip
+	
+	Let \((D, s, t, k)\) be an instance of the \textsc{Double Cut} problem and
+	let \(F\) be an optimal solution to this problem, meaning one with the
+	smallest possible size. Denote \(P\) as the set of all the paths in \(D\)
+	from \(s\) to \(t\). Define:
+	\[ \quad X \ = \ \left\{a \in F \ : \ \underset{p \in P}{\forall} \ a \
+	\text{is not the last arc on} \ p \ \text{that belongs to} \ F \right\}
+	\text{.} \]
+	and
+	\[ Y \ = \ \left\{a \in F \ : \ \underset{p \in P}{\exists} \ a \
+	\text{is the last arc on} \ p \ \text{that belongs to} \ F \right\} \]
+	With these definitions, \(F = X \cup Y\) and \(X \cap Y = \emptyset\).
+	
+	\medskip
+	
+	\underline{Lemma 1} For any \(p \in P\), \(|p \cap X| \geqslant 1\).
+	
+	\medskip
+	
+	\underline{Proof of Lemma 1} Suppose, for the sake of contradiction, that
+	there exists a path \(p \in P\) such that \(p \cap X = \emptyset\). Then,
+	\(p \cap F = p \cap Y\). Let \(a\) be the first arc on \(p\) that belongs to
+	\(Y\). Since \(a \in Y\), there exists another path \(p' \in P\) where \(a\)
+	is the last arc belonging to \(F\). By merging the prefix of \(p\) ending
+	with \(a\) with the suffix of \(p'\) starting after \(a\), we construct
+	another path from \(s\) to \(t\) that contains only one arc from \(F\). This
+	contradiction completes the proof of Lemma 1.
+	
+	\medskip
+	
+	\underline{Lemma 2} For some optimal solution \(F\), \(Y\) is an important
+	\((s, t)\)-separator in \(D\).
+	
+	\medskip
+	
+	\underline{Proof of Lemma 2} If there exists a path \(p \in P\) that does
+	not pass through \(Y\), then \(p \cap F = p \cap X\). Consequently, the last
+	arc on \(p\) belonging to \(F\) would also be in \(X\), leading to a
+	contradiction. Hence, \(Y\) is an \((s, t)\)-separator in \(D\).
+	
+	\smallskip
+	
+	Let \(R_{s}(Y)\) denote the set of vertices reachable from \(s\) in \(D
+	\setminus Y\). Suppose there exists an \((s, t)\)-separator \(Y'\) such that
+	\(|Y| \geqslant |Y'|\) and \(R_{s}(Y) \subseteq R_{s}(Y')\), where
+	\(R_{s}(Y')\) is defined analogously. We claim that \(F' = X \cup Y'\) is
+	also a valid solution.
+	
+	\smallskip
+	
+	If there exists a path \(p \in P\) containing at most one arc from \(F'\),
+	that arc must belong to \(Y'\) because \(Y'\) is an \((s, t)\)-separator.
+	By Lemma 1, this arc belongs to \(X\) as well. Since \(F\) is a solution,
+	\(p\) also contains another arc \(a = (u, v) \in Y\), where \(u \in
+	R_{s}(Y)\). This implies \(u \in R_{s}(Y')\), meaning there exists a path
+	\(p'\) from \(s\) to \(u\) that avoids \(Y'\). By merging the prefix of
+	\(p'\) ending at \(u\) with the suffix of \(p\) starting at \(u\), we obtain
+	a path from \(s\) to \(t\) that contains no edges from \(Y'\). This
+	contradicts the assumption that \(Y'\) is an \((s, t)\)-separator, proving
+	that \(F'\) is another solution of size no greater than \(F\). This
+	concludes the proof of Lemma 2.
+	
+	\medskip
+	
+	To find an optimal set \(X\) for a given \(Y\), we can merge all vertices
+	with outgoing arcs in \(Y\) into a single vertex and then run a maximum flow
+	algorithm from \(s\) to this new vertex. The correctness of this approach
+	follows from Lemma 1, and its time complexity is polynomial in \(n\), where
+	\(n\) is the number of vertices in \(D\).
+	
+	\medskip
+	
+	The final algorithm proceeds as follows:
+	\begin{enumerate}
+		\item Iterate over all possible important separators \(Y\) of size at
+		      most \(k\).
+		\item For each \(Y\), compute the optimal set \(X\).
+		\item If \(|X| + |Y| \leqslant k\), return \texttt{true}.
+		\item If no solution is found, return \texttt{false}.
+	\end{enumerate}
+	The time complexity of this algorithm is \(4^{k} \cdot n^{\mathcal{O}(1)}\),
+	as important separators can be enumerated in time \(4^{k} \cdot
+	n^{\mathcal{O}(1)}\). This is fixed-parameter tractable when parameterized
+	by \(k\), concluding the proof.
 \end{document}
