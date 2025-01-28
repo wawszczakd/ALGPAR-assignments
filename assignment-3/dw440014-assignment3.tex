@@ -201,4 +201,66 @@
 	as important separators can be enumerated in time \(4^{k} \cdot
 	n^{\mathcal{O}(1)}\). This is fixed-parameter tractable when parameterized
 	by \(k\), concluding the proof.
+	
+	\newpage
+	
+	\textbf{Problem 3}
+	
+	\medskip
+	
+	We will use the representative sets technique. Define
+	\begin{align*}
+		\mathcal{P}_{u \to v}^{p} \ = \ \big\{ V(P) \ : \ &P \
+		\text{consists of} \ \big\lfloor \tfrac{p - 1}{5} \big\rfloor \
+		\text{vertex-disjoint cycles of length} \ 5 \\
+		&\text{and a path of length} \ (p - 1) \ \text{mod} \ 5 \ \text{from} \
+		u \ \text{to} \ v \big\} \text{,}
+	\end{align*}
+	for every \(u, v \in V(G)\). Let \(\widehat{\mathcal{P}}_{u \to v}^{p}
+	\subseteq_{\text{rep}}^{5k - p} \mathcal{P}_{u \to v}^{p}\). We will
+	calculate \(\widehat{\mathcal{P}}_{u \to v}^{p}\) for each \(p \in \{1, 2,
+	\ldots, 5k\}\), maintaining the invariant \(\big|
+	\widehat{\mathcal{P}}_{u \to v}^{p} \big| \leqslant \binom{5k}{p}\).
+	
+	\medskip
+	
+	For \(p = 1\), we have \(\widehat{\mathcal{P}}_{u \to u}^{1} = \{\{u\}\}\),
+	for every \(u \in V(G)\). Assume that
+	\(\widehat{\mathcal{P}}_{u \to v}^{p - 1}\) has already been computed. If
+	\((p - 1) \ \text{mod} \ 5 \neq 0\), let
+	\[ \widetilde{\mathcal{P}}_{u \to v}^{p} \ = \
+	\bigcup\limits_{\{w, v\} \in E(G)} \Big\{ P \cup \{v\} \ : \ P \in
+	\widehat{\mathcal{P}}_{u \to w}^{p - 1} \ \wedge \ v \notin P \Big\}
+	\text{,} \]
+	for every \(u, v \in V(G)\). Otherwise, let
+	\[ \widetilde{\mathcal{P}}_{u \to u}^{p} \ = \
+	\bigcup\limits_{\{v, w\} \in E(G)} \Big\{ P \cup \{u\} \ : \ P \in
+	\widehat{\mathcal{P}}_{v \to w}^{p - 1} \ \wedge \ u \notin P \Big\}
+	\text{,} \]
+	for every \(u \in V(G)\). Here we only consider vertex pairs connected by an
+	edge to close the cycle. Finally, let
+	\[ \widehat{\mathcal{P}}_{u \to v}^{p} \ = \ \text{trim} \Big(
+	\widetilde{\mathcal{P}}_{u \to v}^{p} \Big) \text{,} \]
+	for every \(u, v \in V(G)\). The trim operation applies the FLS (Fomin,
+	Lokshtanov, Saurabh) algorithm, ensuring the invariant is maintained.
+	
+	\medskip
+	
+	The final answer is
+	\[ \underset{\{u, v\} \in E(G)}{\exists} \
+	\widehat{\mathcal{P}}_{u \to v}^{5k} \ \neq \ \emptyset \text{,} \]
+	since the last cycle must be closed by an edge.
+	
+	\medskip
+	
+	The size of \(\widetilde{\mathcal{P}}_{u \to v}^{p}\) is at most \(n^{2}
+	\cdot \binom{5k}{p}\) due to the invariant. Therefore, the time needed to
+	compute \(\widehat{\mathcal{P}}_{u \to v}^{5k}\) is bounded by
+	\((2^{5 \omega})^{k} \cdot n^{\mathcal{O}(1)}\), where \(\omega\) is the
+	matrix multiplication constant. Given that there are \(5k\) iterations, each
+	requiring this step \(n^{2}\) times, the total time complexity is
+	\((2^{5 \omega})^{k} \cdot n^{\mathcal{O}(1)}\). This completes the proof,
+	as
+	\[ 2^{\omega} \ \approx \ 2^{2.371552} \ \approx \ 5.174975 \text{,} \quad
+	\text{while} \quad 2e \ \approx \ 5.436564 \text{.} \]
 \end{document}
