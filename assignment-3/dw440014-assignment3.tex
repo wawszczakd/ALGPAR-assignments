@@ -307,8 +307,13 @@
 		
 		\item \(H = \text{merge}(H', H'')\)
 		      
-		      In this case \(\partial H' = \partial H''\), and we set
-		      \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) + \text{dp}_{H''}(f)\).
+		      In this case \(\partial H = \partial H' = \partial H''\), and we
+		      set
+		      \[ \text{dp}_{H}(f) = \text{dp}_{H'}(f) + \text{dp}_{H''}(f) -
+		      |\{\{u, v\} \ : \ \{u, v\} \in E(\partial H) \ \wedge \ f(u) \neq
+		      f(v)\}| \text{.} \]
+		      We subtract the number of edges in \(\partial H\) with endpoints
+		      of different colors to avoid double counting.
 	\end{enumerate}
 	The answer to the \textsc{Max Cut} problem is
 	\(\text{dp}_{T}(\text{empty function})\), where \(T\) is the full
