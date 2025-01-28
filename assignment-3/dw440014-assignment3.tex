@@ -260,7 +260,58 @@
 	matrix multiplication constant. Given that there are \(5k\) iterations, each
 	requiring this step \(n^{2}\) times, the total time complexity is
 	\((2^{5 \omega})^{k} \cdot n^{\mathcal{O}(1)}\). This completes the proof,
-	as
-	\[ 2^{\omega} \ \approx \ 2^{2.371552} \ \approx \ 5.174975 \text{,} \quad
-	\text{while} \quad 2e \ \approx \ 5.436564 \text{.} \]
+	as \(2^{\omega} \approx 2^{2.371552} \approx 5.174975\), while \(2e \approx
+	5.436564\).
+	
+	\bigskip
+	
+	\textbf{Problem 4}
+	
+	\medskip
+	
+	Without loss of generality, assume the decomposition is nice. For any
+	subtree \(H\) of the decomposition and its boundary \(\partial H\), let \(f
+	: V(\partial H) \to \{\text{blue}, \text{red}\}\). Define
+	\(\text{dp}_{H}(f)\) as the maximum number of edges in \(H\) with endpoints
+	of different colors, for some coloring \(g : V(H) \to \{\text{blue},
+	\text{red}\}\) such that for every \(u \in V(\partial H)\), \(g(u) = f(u)\).
+	
+	\medskip
+	
+	To compute \(\text{dp}_{H}\), we consider the following cases:
+	\begin{enumerate}
+		\item \(H = \emptyset\)
+		      
+		      In this case, \(\text{dp}_{H}(\text{empty function}) = 0\).
+		
+		\item \(H = \text{introduceVertex}(H', u)\)
+		      
+		      Here, \(\text{dp}_{H}(f) = \text{dp}_{H'}(f')\), where \(f =
+		      f'[u \to \text{color}]\), and color is either blue or red. We use
+		      the notation \(g[p \to q]\) to denote the function h defined by:
+		      \[ h(x) \ = \ \begin{cases} q \text{,} & \text{if} \ x = p
+		      \text{,} \\
+		      g(x) \text{,} & \text{otherwise.} \end{cases} \]
+		
+		\item \(H = \text{introduceEdge}(H', u, v)\)
+		      
+		      In this case, \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) + [f(u) \neq
+		      f(v)]\), where \([P]\) denotes the Iverson bracket, i.e., \([P] =
+		      1\) if \(P\) is true and \([P] = 0\) otherwise.
+		
+		\item \(H = \text{forgetVertex}(H', u)\)
+		      
+		      Here, \(\text{dp}_{H}(f) = \max(\{
+		      \text{dp}_{H'}(f[u \to \text{blue}]),
+		      \text{dp}_{H'}(f[u \to \text{red}])\})\).
+		
+		\item \(H = \text{merge}(H', H'')\)
+		      
+		      In this case \(\partial H' = \partial H''\), and we set
+		      \(\text{dp}_{H}(f) = \text{dp}_{H'}(f) + \text{dp}_{H''}(f)\).
+	\end{enumerate}
+	The answer to the \textsc{Max Cut} problem is
+	\(\text{dp}_{T}(\text{empty function})\), where \(T\) is the full
+	decomposition. The time complexity of this algorithm is \(2^{t} \cdot
+	n^{\mathcal{O}(1)}\).
 \end{document}
