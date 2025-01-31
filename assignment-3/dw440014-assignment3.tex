@@ -176,8 +176,8 @@
 	\(p'\) ending at \(u\) with the suffix of \(p\) starting at \(u\), we obtain
 	a path from \(s\) to \(t\) that contains no edges from \(Y'\). This
 	contradicts the assumption that \(Y'\) is an \((s, t)\)-separator, proving
-	that \(F'\) is another solution of size no greater than \(F\). This
-	concludes the proof of Lemma 2.
+	that \(F'\) is another solution of size no greater than \(F\), completing
+	the proof of Lemma 2.
 	
 	\medskip
 	
@@ -319,4 +319,103 @@
 	\(\text{dp}_{T}(\text{empty function})\), where \(T\) is the full
 	decomposition. The time complexity of this algorithm is \(2^{t} \cdot
 	n^{\mathcal{O}(1)}\).
+	
+	\medskip
+	
+	Now, we prove that under the Strong Exponential Time Hypothesis (SETH), no
+	algorithm can run in time \(2^{t - \varepsilon} \cdot n^{\mathcal{O}(1)}\)
+	for any \(\varepsilon > 0\). Given an instance \(\varphi\) of the SAT
+	problem with \(n\) variables, we construct a graph \(G\) as follows:
+	\begin{enumerate}
+		\item Create a special vertex \(r\).
+		\item For each variable \(x_{i}\), add a vertex \(u_{i}\) to \(G\).
+		      Define \(u(l)\) as the vertex corresponding to literal \(l\).
+		\item For each clause \(c \in \varphi\), let \(c = (l_{c, 1} \ \vee \
+		      l_{c, 2} \ \vee \ \ldots \ \vee \ l_{c, |c|})\), where \(l_{c, j}
+		      \in \bigcup\limits_{i \in \{1, 2, \ldots, n\}} \{x_{i}, \neg
+		      x_{i}\}\), for each \(j \in \{1, \ldots, |c|\}\). Without loss of
+		      generality, assume \(|c| \leqslant n\), as otherwise, some two
+		      literals would correspond to the same variable. Additionally,
+		      assume the first \(k_{c}\) literals correspond to normal
+		      variables, while the remaining \(|c| - k_{c}\) are negations.
+		      \begin{enumerate}[label=\theenumi.\arabic*]
+		          \item Create \(2n + 2\) vertices: \(v_{c, 1}, v_{c, 2},
+		                \ldots, v_{c, 2n + 2}\). Arrange them in a cycle
+		                \(C_{c} = (r, v_{c, 1}, v_{c, 2}, \allowbreak \ldots,
+		                v_{c, 2n + 2})\), adding \(2n + 1\) edges between every
+		                pair of consecutive vertices. This results in a
+		                non-simple graph, but we will later address this issue.
+		          \item For each \(j \in \{1, 2, \ldots, k_{c}\}\), add edges
+		                \(\{v_{c, 2j - 1}, u(l_{c, j})\}\) and
+		                \(\{v_{c, 2j}, u(l_{c, j})\}\).
+		          \item For each \(j \in \{k_{c} + 1, k_{c} + 2, \ldots,
+		                |c|\}\), add edges \(\{v_{c, 2j}, u(l_{c, j})\}\) and
+		                \(\{v_{c, 2j + 1}, u(l_{c, j})\}\).
+		      \end{enumerate}
+		      Note that by this construction, every vertex in \(C_{c}\), except
+		      for \(r\), has at most one neighbor outside the cycle.
+	\end{enumerate}
+	Let
+	\[ M = ((2n + 1) \cdot (n + 1) + 1) \cdot m + \sum\limits_{c \in \varphi}
+	|c| \text{,} \]
+	where \(m\) is the number of clauses in \(\varphi\). We claim that
+	\(\varphi\) is satisfiable if and only if the max cut in \(G\) is at least
+	\(M\).
+	
+	\medskip
+	
+	First, assume that \(\varphi\) is satisfiable. We assign \(r\) the color
+	blue. For each variable \(x_{i}\), we color \(u_{i}\) blue if \(x_{i}\) is
+	true, and red otherwise. For every clause \(c\), let \(l_{c, j}\) be the
+	first true literal in \(c\). Let \(v_{c, x}\) and \(v_{c, x + 1}\) be the
+	two neighbors of \(u(l_{c, j})\) in \(C_{c}\). For all \(y \in \{1, 2,
+	\ldots, x\}\), we color \(v_{c, y}\) blue if \(y\) is even, and red
+	otherwise. For all \(y \in \{x + 1, x + 2, \ldots, 2n + 2\}\), we color
+	\(v_{c, y}\) red if \(y\) is even, and blue otherwise. Note that
+	\(v_{c, x}\) and \(v_{c, x + 1}\) share the same color, which differs from
+	the color of \(u(l_{c, j})\), while the remaining vertices in \(C_{c}\)
+	alternate in color. Thus, the number of edges with endpoints of different
+	colors in \(C_{c}\) is exactly \((2n + 1) \cdot (n + 1) + 1 + |c|\), since
+	the neighbors of every literal vertex other than \(u(l_{c, j})\) have
+	different colors. Therefore, the total number of edges with endpoints of
+	different colors is \(M\).
+	
+	\medskip
+	
+	Conversely, assume that the max cut in \(G\) is at least \(M\). Without loss
+	of generality, assume the color of \(r\) is blue. Since for every clause \(c
+	\in \varphi\), the cycle \(C_{c}\) has length \(2n + 3\), there can be at
+	most \(n + 1\) pairs of consecutive vertices with different colors. If there
+	exists a clause \(c \in \varphi\) with fewer than \(n + 1\) such pairs, the
+	number of edges with endpoints of different colors in \(C_{c}\) would be at
+	most \((2n + 1) \cdot n + 2|c|\), which is strictly less than \((2n + 1)
+	\cdot (n + 1)\). Therefore, for each \(c \in \varphi\), there must be
+	exactly one pair of consecutive vertices in \(C_{c}\) with the same color.
+	Moreover, for any clause \(c \in \varphi\), the contribution of \(C_{c}\) to
+	the cut is at most \((2n + 1) \cdot (n + 1) + 1 + |c|\), implying that it is
+	exactly \((2n + 1) \cdot (n + 1) + 1 + |c|\). Thus, there exists a literal
+	\(l_{c, j}\) such that \(u(l_{c, j})\) has a different color from both its
+	neighbors in \(C_{c}\). This is the literal that satisfies the clause \(c\),
+	concluding the proof of the equivalence.
+	
+	\medskip
+	
+	To remove multi-edges, replace each with a path of length \(3\). It is easy
+	to verify that the equivalence still holds.
+	
+	\medskip
+	
+	Since the size of \(G\) is polynomial in the size of \(\varphi\), it remains
+	to calculate the bound on the treewidth of \(G\). The treewidth of each path
+	of length \(3\) is \(1\). We can place all the decompositions of these paths
+	next to each other, then insert the vertices from \(C_{c}\) that each path
+	connects, resulting in a tree decomposition of treewidth 3. Next, we add
+	\(r\) and the vertices corresponding to the variables to each bag, which
+	gives a tree decomposition of \(G\) with treewidth \(n + 4\).
+	
+	\medskip
+	
+	Therefore, an algorithm solving \textsc{Max Cut} in time
+	\(2^{t - \varepsilon} \cdot n^{\mathcal{O}(1)}\) for some \(\varepsilon >
+	0\) contradicts SETH, which completes the proof.
 \end{document}
