@@ -15,7 +15,7 @@ solutions are in English and provided as PDFs generated with LaTeX.
 
 The assignments cover the following topics:
 
-1. Dynamic programming, branching kernelization iterative compression
+1. Dynamic programming, branching, kernelization, iterative compression
 2. Treewidth, color coding, algebraic techniques
 3. W-hardness, important separators, representative sets, SETH and ETH
 
